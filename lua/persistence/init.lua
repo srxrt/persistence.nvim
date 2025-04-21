@@ -64,19 +64,16 @@ function M.setup(opts)
         return
       end
 
-      vim.cmd("silent! %bwipeout")
-      M.load()
-      vim.g.nvim_tree_disable = true -- Custom flag to block nvim-tree
-      -- -- check if open buffers are non-file
-      -- for _, bufnr in ipairs(vim.api.nvim_list_bufs()) do
-      --   if vim.api.nvim_buf_is_loaded(bufnr) and vim.api.nvim_buf_get_option(bufnr, "buflisted") then
-      --     local ft = vim.api.nvim_buf_get_option(bufnr, "filetype")
-      --     if ui_filetypes[ft] then
-      --       vim.cmd(":bdelete! " .. tostring(bufnr))
-      --       M.load()
-      --     end
-      --   end
-      -- end
+      -- -- load last session
+      vim.api.nvim_create_autocmd("VimEnter", {
+        group = vim.api.nvim_create_augroup("nullsession", { clear = true }),
+        callback = function()
+          if vim.fn.getcwd() ~= vim.env.HOME then
+            M.load()
+          end
+        end,
+        nested = true,
+      })
     end,
   })
 end
@@ -95,7 +92,7 @@ end
 function M.start()
   M._active = true
   vim.api.nvim_create_autocmd("VimLeavePre", {
-    group = vim.api.nvim_create_augroup("persistence", { clear = true }),
+    group = vim.api.nvim_create_augroup("nullsession", { clear = true }),
     callback = function()
       M.fire("SavePre")
 
