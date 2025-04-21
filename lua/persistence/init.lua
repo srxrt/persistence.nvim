@@ -23,6 +23,14 @@ end
 function M.setup(opts)
   Config.setup(opts)
   M.start()
+  if Config.auto_load then
+    vim.api.nvim_create_autocmd("VimEnter", {
+      once = true,
+      callback = function()
+        vim.defer_fn(M.load, 50)
+      end,
+    })
+  end
 end
 
 function M.fire(event)
