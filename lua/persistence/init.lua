@@ -60,7 +60,7 @@ function M.setup(opts)
           end
         end
       end
-      if only_ui_buffers then
+      if true then
         vim.cmd("bw")
         vim.cmd("enew!")
         M.load()
