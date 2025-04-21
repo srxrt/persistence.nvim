@@ -64,16 +64,19 @@ function M.setup(opts)
         return
       end
 
-      -- check if open buffers are non-file
-      for _, bufnr in ipairs(vim.api.nvim_list_bufs()) do
-        if vim.api.nvim_buf_is_loaded(bufnr) and vim.api.nvim_buf_get_option(bufnr, "buflisted") then
-          local ft = vim.api.nvim_buf_get_option(bufnr, "filetype")
-          if ui_filetypes[ft] then
-            vim.cmd(":bdelete! " .. tostring(bufnr))
-            M.load()
-          end
-        end
-      end
+      vim.cmd("silent! %bwipeout")
+      M.load()
+      vim.g.nvim_tree_disable = true -- Custom flag to block nvim-tree
+      -- -- check if open buffers are non-file
+      -- for _, bufnr in ipairs(vim.api.nvim_list_bufs()) do
+      --   if vim.api.nvim_buf_is_loaded(bufnr) and vim.api.nvim_buf_get_option(bufnr, "buflisted") then
+      --     local ft = vim.api.nvim_buf_get_option(bufnr, "filetype")
+      --     if ui_filetypes[ft] then
+      --       vim.cmd(":bdelete! " .. tostring(bufnr))
+      --       M.load()
+      --     end
+      --   end
+      -- end
     end,
   })
 end
