@@ -64,11 +64,13 @@ function M.setup(opts)
         return
       end
 
-      -- -- load last session
+      ---- load last session
       vim.api.nvim_create_autocmd("VimEnter", {
+        once = true,
         group = vim.api.nvim_create_augroup("nullsession", { clear = true }),
         callback = function()
           if vim.fn.getcwd() ~= vim.env.HOME then
+            vim.cmd("bdelete")
             M.load()
           end
         end,
