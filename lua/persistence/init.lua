@@ -61,7 +61,8 @@ function M.setup(opts)
         end
       end
       if only_ui_buffers then
-        vim.defer_fn(M.load, 50)
+        vim.cmd("anew!")
+        M.load()
       end
     end,
   })
