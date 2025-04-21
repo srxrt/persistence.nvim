@@ -41,6 +41,10 @@ function M.setup(opts)
   vim.api.nvim_create_autocmd("VimEnter", {
     once = true,
     callback = function()
+      if #vim.v.argv == 0 then
+        return
+      end
+
       local session_file = M.current()
       if vim.fn.filereadable(session_file) == 0 then
         return
