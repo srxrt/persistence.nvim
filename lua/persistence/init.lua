@@ -22,15 +22,45 @@ end
 
 function M.setup(opts)
   Config.setup(opts)
+
+  local ui_filetypes = {
+    alpha = true,
+    dashboard = true,
+    starter = true,
+    lazy = true,
+    ["neo-tree"] = true,
+    oil = true,
+  }
+
   M.start()
-  if Config.auto_load and #vim.fn.argv() then
-    vim.api.nvim_create_autocmd("VimEnter", {
-      once = true,
-      callback = function()
-        vim.defer_fn(M.load, 50)
-      end,
-    })
+
+  if not Config.auto_load then
+    return
   end
+
+  vim.api.nvim_create_autocmd("VimEnter", {
+    once = true,
+    callback = function()
+      local session_file = M.current()
+      if vim.fn.filereadable(session_file) == 0 then
+        return
+      end
+
+      -- check if open buffers are just ui placeholders
+      local only_ui_buffers = true
+      for _, bufnr in ipairs(vim.api.nvim_list_bufs()) do
+        if vim.api.nvim_buf_is_loaded(bufnr) and vim.api.nvim_buf_get_option(bufnr, "buflisted") then
+          local ft = vim.api.nvim_buf_get_option(bufnr, "filetype")
+          if not ui_filetypes[ft] then
+            only_ui_buffers = false
+          end
+        end
+      end
+      if only_ui_buffers then
+        vim.defer_fn(M.load, 50)
+      end
+    end,
+  })
 end
 
 function M.fire(event)
