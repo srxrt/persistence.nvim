@@ -30,6 +30,7 @@ function M.setup(opts)
     lazy = true,
     ["neo-tree"] = true,
     oil = true,
+    netrw = true,
   }
 
   M.start()
@@ -50,20 +51,15 @@ function M.setup(opts)
         return
       end
 
-      -- check if open buffers are just ui placeholders
-      local only_ui_buffers = true
+      -- check if open buffers are non-file
       for _, bufnr in ipairs(vim.api.nvim_list_bufs()) do
         if vim.api.nvim_buf_is_loaded(bufnr) and vim.api.nvim_buf_get_option(bufnr, "buflisted") then
           local ft = vim.api.nvim_buf_get_option(bufnr, "filetype")
-          if not ui_filetypes[ft] then
-            only_ui_buffers = false
+          if ui_filetypes[ft] then
+            vim.cmd(":bdelete! " .. tostring(bufnr))
+            M.load()
           end
         end
-      end
-      if true then
-        vim.cmd("bw")
-        vim.cmd("enew!")
-        M.load()
       end
     end,
   })
