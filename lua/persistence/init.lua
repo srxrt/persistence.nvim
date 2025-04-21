@@ -1,5 +1,28 @@
 local Config = require("persistence.config")
 
+local ui_filetypes = {
+  alpha = true,
+  dashboard = true,
+  starter = true,
+  lazy = true,
+  ["neo-tree"] = true,
+  oil = true,
+  netrw = true,
+}
+
+local function closeNonFileBuffers()
+  print("closeNonFileBuffers")
+  for _, bufnr in ipairs(vim.api.nvim_list_bufs()) do
+    vim.api.nvim_buf_call(bufnr, function()
+      local buftype = vim.bo.filetype
+      if ui_filetypes[buftype] then
+        vim.cmd(":bdelete! " .. tostring(bufnr))
+      end
+    end)
+    -- Check if the buffer is non-file (e.g., NERDTree or UndoTree)
+  end
+end
+
 local uv = vim.uv or vim.loop
 
 local M = {}
@@ -22,16 +45,6 @@ end
 
 function M.setup(opts)
   Config.setup(opts)
-
-  local ui_filetypes = {
-    alpha = true,
-    dashboard = true,
-    starter = true,
-    lazy = true,
-    ["neo-tree"] = true,
-    oil = true,
-    netrw = true,
-  }
 
   M.start()
 
@@ -95,6 +108,7 @@ function M.start()
         end
       end
 
+      closeNonFileBuffers()
       M.save()
       M.fire("SavePost")
     end,
