@@ -23,7 +23,7 @@ end
 function M.setup(opts)
   Config.setup(opts)
   M.start()
-  if Config.auto_load then
+  if Config.auto_load and #vim.fn.argv() then
     vim.api.nvim_create_autocmd("VimEnter", {
       once = true,
       callback = function()

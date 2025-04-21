@@ -1,11 +1,20 @@
 # 💾 Persistence
 
-**Persistence** is a simple lua plugin for automated session management.
+A lightweight session management plugin for Neovim, originally forked from [folke/persistence.nvim](https://github.com/folke/persistence.nvim).
 
 ## ✨ Features
 
-- automatically saves the active session under `~/.local/state/nvim/sessions` on exit
-- simple API to restore the current or last session
+- 📦 Automatically saves your session on exit under `~/.local/state/nvim/sessions` 
+- 🚀 Automatically loads your last session on startup (configurable)
+- 🧠 Smart logic: does **not** autoload sessions if Neovim is launched without any file arguments (e.g., just running `nvim` to show a dashboard)
+- Provides simple API to restore the current or last session
+
+## 📚 Description
+
+**Persistence** is a Neovim plugin for managing sessions — preserving buffers, window layout, and more across restarts.
+
+This version builds upon the original by adding **session autoloading** functionality. It ensures a seamless experience by **only loading sessions when appropriate**, such as when opening Neovim with files or projects, and **skipping session restore** when launched with no arguments (e.g., opening a dashboard via `nvim` alone).
+
 
 ## ⚡️ Requirements
 
@@ -20,7 +29,7 @@ Install the plugin with your preferred package manager:
 ```lua
 -- Lua
 {
-  "folke/persistence.nvim",
+  "viminizer/persistence.nvim",
   event = "BufReadPre", -- this will only start session saving when an actual file was opened
   opts = {
     -- add any custom options here
@@ -39,6 +48,7 @@ Persistence comes with the following defaults:
   -- Set to 0 to always save
   need = 1,
   branch = true, -- use git branch to save session
+  auto_load = true -- enable autoloading sessions when enter
 }
 ```
 
@@ -47,8 +57,7 @@ Persistence comes with the following defaults:
 
 ## 🚀 Usage
 
-**Persistence** works well with plugins like `startify` or `dashboard`. It will never restore a session automatically,
-but you can of course write an autocmd that does exactly that if you want.
+**Persistence** works well with plugins like `startify` or `dashboard`.
 
 ```lua
 -- load the session for the current directory
